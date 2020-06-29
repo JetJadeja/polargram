@@ -252,7 +252,7 @@ class _PostListState extends State<PostList> {
                                 ),
                               ),
                               Text(
-                                "Follow users or 'shake' posts to get more reccomendations (or click this screen to refresh)",
+                                "Follow users or 'shake' posts to get more recommendations (or click this screen to refresh)",
                                 textAlign: TextAlign.center,
                                 style: Flutter95.textStyle,
                               ),
