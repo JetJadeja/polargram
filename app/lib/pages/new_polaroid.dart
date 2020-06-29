@@ -5,11 +5,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter95/flutter95.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:polargram/shared/loader.dart';
+import '../shared/loader.dart';
 
 class NewPolaroidScreen extends StatefulWidget {
-  const NewPolaroidScreen({Key key}) : super(key: key);
-
   @override
   _NewPolaroidScreenState createState() => _NewPolaroidScreenState();
 }

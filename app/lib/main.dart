@@ -12,7 +12,7 @@ import 'services/db.dart';
 typedef RouteBuilder = MaterialPageRoute Function();
 
 final RouteBuilder newPolaroidRouteBuilder =
-    () => MaterialPageRoute(builder: (ctx) => const NewPolaroidScreen());
+    () => MaterialPageRoute(builder: (ctx) => NewPolaroidScreen());
 
 final RouteBuilder feedRouteBuilder =
     () => MaterialPageRoute(builder: (ctx) => FeedScreen());

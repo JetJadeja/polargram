@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter95/flutter95.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import '../main.dart';
 import '../services/auth.dart';
 import '../shared/loader.dart';
-
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
