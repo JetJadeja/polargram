@@ -38,6 +38,8 @@ class Post {
   final String image_3;
   final String image_4;
 
+  List<String> get images => [image_0, image_1, image_2, image_3, image_4];
+
   final String title;
   final int timestamp;
   final Map<String, int> shakes;

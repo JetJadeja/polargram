@@ -241,7 +241,7 @@ class _PostListState extends State<PostList> {
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children: const [
                               Text(
                                 "This is the end of your feed!",
                                 style: TextStyle(
@@ -293,6 +293,7 @@ class _PostListState extends State<PostList> {
                                       .split(" ")[0];
 
                               String image;
+
                               switch (shakes) {
                                 case 0:
                                   image = post.image_0;
@@ -323,6 +324,13 @@ class _PostListState extends State<PostList> {
                                       _visiblePostID = post.id;
                                       _visiblePostCreatorID = user.id;
                                     });
+
+                                    for (final imageURL in post.images) {
+                                      precacheImage(
+                                        NetworkImage(imageURL),
+                                        context,
+                                      );
+                                    }
                                   }
                                 },
                                 child: Column(
@@ -358,7 +366,7 @@ class _PostListState extends State<PostList> {
                                                         const EdgeInsets.only(
                                                             top: 20),
                                                     child: Center(
-                                                      child: Container(
+                                                      child: SizedBox(
                                                         width: 245,
                                                         height: 255,
                                                         child: Image.network(
@@ -372,7 +380,7 @@ class _PostListState extends State<PostList> {
                                             ),
                                             Text(
                                               post.title,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 color: Flutter95.black,
                                                 fontSize: 24,
                                                 decoration: TextDecoration.none,
@@ -381,7 +389,7 @@ class _PostListState extends State<PostList> {
                                             ),
                                             Row(
                                               children: [
-                                                Text("by ",
+                                                const Text("by ",
                                                     style: Flutter95.textStyle),
                                                 GestureDetector(
                                                   onTap: () => Navigator.push(
@@ -395,7 +403,7 @@ class _PostListState extends State<PostList> {
                                                                       .username))),
                                                   child: Text(
                                                     user.username,
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       color:
                                                           Flutter95.headerLight,
                                                       fontSize: 14,
@@ -410,7 +418,7 @@ class _PostListState extends State<PostList> {
                                                     style: Flutter95.textStyle),
                                                 Text(
                                                   "$shakes shakes",
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: Flutter95.headerDark,
                                                     fontSize: 14,
                                                     decoration:

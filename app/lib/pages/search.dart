@@ -82,7 +82,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   child: Text(
                                     user.username,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Flutter95.headerLight,
                                       fontSize: 40,
                                       decoration: TextDecoration.none,
@@ -94,7 +94,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 8),
                                     child: self.following.contains(user.id)
-                                        ? Text(
+                                        ? const Text(
                                             "(Following)",
                                             style: TextStyle(
                                               color: Flutter95.headerLight,
