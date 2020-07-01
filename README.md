@@ -1,10 +1,10 @@
 # Polargram
 
-### ↠ Online Demo: https://polargram.me/demo
+### ↠ Online Demo: https://polargram.me/demo *(Simulator Only: Double tap on a polaroid to "shake" it)*
 
 Instagram like it's 1995.
 
-- **Share polaroids that require multiple users to shake their phones to help reveal your image!**
+- **Uses your phone's accelerometer to allow you to physically shake your phone to develop an image!**
 - Get a personalized feed with filled with images from the people you follow!
 - Our recommendation algorithim will help you discover posts you will love!
 - Our app is styled like Windows 95 thanks to the [Flutter95 widgets](https://github.com/miquelbeltran/flutter95/)
