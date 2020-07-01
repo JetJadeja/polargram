@@ -43,6 +43,10 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     final self = Provider.of<User>(context);
 
+    if (self == null) {
+      return LoadingScaffold();
+    }
+
     return FutureBuilder<List<User>>(
       future: query,
       builder: (context, usersSnapshot) {
@@ -118,10 +122,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           );
         } else {
-          return Scaffold95(
-            title: "Loading users...",
-            body: ExpandedCenterLoader(),
-          );
+          return LoadingScaffold();
         }
       },
     );
