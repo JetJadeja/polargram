@@ -132,43 +132,7 @@ class _PostListState extends State<PostList> {
   @override
   void initState() {
     _detector = ShakeDetector.autoStart(
-      onPhoneShake: () {
-        // Ensure we are viewing a post currently before we update the DB.
-        if (_visiblePostID != null && _visiblePostCreatorID != null) {
-          _debouncer.run(() {
-            final self = Provider.of<User>(context, listen: false);
-
-            if ((self?.shakenPosts["$_visiblePostCreatorID+$_visiblePostID"] ??
-                    0) <
-                4) {
-              setState(() {
-                _shake = true;
-              });
-
-              Document<Post>(
-                path: "users/$_visiblePostCreatorID/posts/$_visiblePostID",
-              ).update(
-                {
-                  "shakes.${self.id}": FieldValue.increment(1),
-                },
-              );
-
-              UserDocument<User>().update(
-                {
-                  "shaken_posts.$_visiblePostCreatorID+$_visiblePostID":
-                      FieldValue.increment(1),
-                },
-              );
-
-              Future.delayed(const Duration(milliseconds: 700), () {
-                setState(() {
-                  _shake = false;
-                });
-              });
-            }
-          });
-        }
-      },
+      onPhoneShake: handleShake,
     );
 
     _feedFuture = widget.getFeed();
@@ -189,8 +153,56 @@ class _PostListState extends State<PostList> {
     });
   }
 
+  Null handleShake() {
+    // Ensure we are viewing a post currently before we update the DB.
+    if (_visiblePostID != null && _visiblePostCreatorID != null) {
+      _debouncer.run(() {
+        final self = Provider.of<User>(context, listen: false);
+
+        if (self == null) {
+          print("self was null!");
+          return;
+        }
+
+        if ((self?.shakenPosts["$_visiblePostCreatorID+$_visiblePostID"] ?? 0) <
+            4) {
+          setState(() {
+            _shake = true;
+          });
+
+          Document<Post>(
+            path: "users/$_visiblePostCreatorID/posts/$_visiblePostID",
+          ).update(
+            {
+              "shakes.${self.id}": FieldValue.increment(1),
+            },
+          );
+
+          UserDocument<User>().update(
+            {
+              "shaken_posts.$_visiblePostCreatorID+$_visiblePostID":
+                  FieldValue.increment(1),
+            },
+          );
+
+          Future.delayed(const Duration(milliseconds: 700), () {
+            setState(() {
+              _shake = false;
+            });
+          });
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final self = Provider.of<User>(context);
+
+    if (self == null) {
+      return ExpandedCenterLoader();
+    }
+
     return FutureBuilder<List<PostRefrence>>(
         future: _feedFuture,
         builder: (context, snapshot) {
@@ -316,96 +328,114 @@ class _PostListState extends State<PostList> {
                                   break;
                               }
 
-                              return VisibilityDetector(
-                                key: Key(post.id),
-                                onVisibilityChanged: (visibilityInfo) {
-                                  if (visibilityInfo.visibleFraction >= 0.8) {
-                                    setState(() {
-                                      _visiblePostID = post.id;
-                                      _visiblePostCreatorID = user.id;
-                                    });
+                              return GestureDetector(
+                                onDoubleTap: handleShake,
+                                child: VisibilityDetector(
+                                  key: Key(post.id),
+                                  onVisibilityChanged: (visibilityInfo) {
+                                    if (visibilityInfo.visibleFraction >= 0.8) {
+                                      setState(() {
+                                        _visiblePostID = post.id;
+                                        _visiblePostCreatorID = user.id;
+                                      });
 
-                                    for (final imageURL in post.images) {
-                                      precacheImage(
-                                        NetworkImage(imageURL),
-                                        context,
-                                      );
+                                      for (final imageURL in post.images) {
+                                        precacheImage(
+                                          NetworkImage(imageURL),
+                                          context,
+                                        );
+                                      }
                                     }
-                                  }
-                                },
-                                child: Column(
-                                  children: [
-                                    Elevation95(
-                                      type: Elevation95Type.down,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            ShakeAnimatedWidget(
-                                              enabled: _shake,
-                                              duration: const Duration(
-                                                  milliseconds: 700),
-                                              shakeAngle:
-                                                  Rotation.deg(z: 20, x: 70),
-                                              curve: Curves.bounceOut,
-                                              child: Stack(
-                                                children: [
-                                                  Center(
-                                                    child: SizedBox(
-                                                      width: 291,
-                                                      height: 355,
-                                                      child: Image.asset(
-                                                        "assets/polaroid.png",
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 20),
-                                                    child: Center(
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Elevation95(
+                                        type: Elevation95Type.down,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              ShakeAnimatedWidget(
+                                                enabled: _shake,
+                                                duration: const Duration(
+                                                    milliseconds: 700),
+                                                shakeAngle:
+                                                    Rotation.deg(z: 20, x: 70),
+                                                curve: Curves.bounceOut,
+                                                child: Stack(
+                                                  children: [
+                                                    Center(
                                                       child: SizedBox(
-                                                        width: 245,
-                                                        height: 255,
-                                                        child: Image.network(
-                                                          image,
+                                                        width: 291,
+                                                        height: 355,
+                                                        child: Image.asset(
+                                                          "assets/polaroid.png",
                                                         ),
                                                       ),
                                                     ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 20),
+                                                      child: Center(
+                                                        child: SizedBox(
+                                                          width: 245,
+                                                          height: 255,
+                                                          child: Image.network(
+                                                            image,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Text(
+                                                post.title,
+                                                style: const TextStyle(
+                                                  color: Flutter95.black,
+                                                  fontSize: 24,
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  const Text("by ",
+                                                      style:
+                                                          Flutter95.textStyle),
+                                                  GestureDetector(
+                                                    onTap: () => Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (ctx) => Profile(
+                                                                userID: user.id,
+                                                                username: user
+                                                                    .username))),
+                                                    child: Text(
+                                                      user.username,
+                                                      style: const TextStyle(
+                                                        color: Flutter95
+                                                            .headerLight,
+                                                        fontSize: 14,
+                                                        decoration:
+                                                            TextDecoration.none,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
                                                   ),
-                                                ],
-                                              ),
-                                            ),
-                                            Text(
-                                              post.title,
-                                              style: const TextStyle(
-                                                color: Flutter95.black,
-                                                fontSize: 24,
-                                                decoration: TextDecoration.none,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                const Text("by ",
-                                                    style: Flutter95.textStyle),
-                                                GestureDetector(
-                                                  onTap: () => Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (ctx) =>
-                                                              Profile(
-                                                                  userID:
-                                                                      user.id,
-                                                                  username: user
-                                                                      .username))),
-                                                  child: Text(
-                                                    user.username,
+                                                  Text(" - $timestamp - ",
+                                                      style:
+                                                          Flutter95.textStyle),
+                                                  Text(
+                                                    "$shakes shakes",
                                                     style: const TextStyle(
                                                       color:
-                                                          Flutter95.headerLight,
+                                                          Flutter95.headerDark,
                                                       fontSize: 14,
                                                       decoration:
                                                           TextDecoration.none,
@@ -413,33 +443,21 @@ class _PostListState extends State<PostList> {
                                                           FontWeight.bold,
                                                     ),
                                                   ),
-                                                ),
-                                                Text(" - $timestamp - ",
-                                                    style: Flutter95.textStyle),
-                                                Text(
-                                                  "$shakes shakes",
-                                                  style: const TextStyle(
-                                                    color: Flutter95.headerDark,
-                                                    fontSize: 14,
-                                                    decoration:
-                                                        TextDecoration.none,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    const Expanded(
-                                      child: SizedBox(),
-                                    ),
-                                  ],
+                                      const Expanded(
+                                        child: SizedBox(),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             } else {
-                              return const Center(child: Loader(size: 50));
+                              return CenterLoader();
                             }
                           },
                         );
@@ -450,7 +468,7 @@ class _PostListState extends State<PostList> {
               ),
             );
           } else {
-            return const Expanded(child: Center(child: Loader(size: 100)));
+            return ExpandedCenterLoader();
           }
         });
   }

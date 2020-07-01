@@ -16,3 +16,14 @@ class Loader extends StatelessWidget {
         size: size,
       );
 }
+
+class CenterLoader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => const Center(child: Loader(size: 70));
+}
+
+class ExpandedCenterLoader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) =>
+      const Expanded(child: Center(child: Loader(size: 70)));
+}

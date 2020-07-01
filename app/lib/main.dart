@@ -8,6 +8,7 @@ import 'pages/login.dart';
 import 'pages/new_polaroid.dart';
 import 'pages/search.dart';
 import 'services/db.dart';
+import 'shared/loader.dart';
 
 typedef RouteBuilder = MaterialPageRoute Function();
 

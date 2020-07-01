@@ -111,11 +111,9 @@ class _ProfileState extends State<Profile> {
               ),
             );
           } else {
-            return const Scaffold95(
+            return Scaffold95(
               title: "Loading profile...",
-              body: Expanded(
-                child: Center(child: Loader(size: 60)),
-              ),
+              body: ExpandedCenterLoader(),
             );
           }
         },
