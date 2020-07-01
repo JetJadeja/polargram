@@ -1,6 +1,6 @@
 # Polargram
 
-### ↠ Online Demo: https://polargram.me/demo *(Simulator Only: Double tap on a polaroid to "shake" it)*
+### ↠ Online Demo: https://polargram.me/demo *(Demo Only: Double tap on a polaroid to "shake" it)*
 
 Instagram like it's 1995.
 
