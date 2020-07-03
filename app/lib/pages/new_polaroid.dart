@@ -70,7 +70,7 @@ class _NewPolaroidScreenState extends State<NewPolaroidScreen> {
         padding: const EdgeInsets.all(3),
         child: Column(
           children: [
-            Align(
+            const Align(
               alignment: Alignment.centerLeft,
               child: Text("Caption:", style: Flutter95.textStyle),
             ),
@@ -119,8 +119,8 @@ class _NewPolaroidScreenState extends State<NewPolaroidScreen> {
             isUploaded
                 ? Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8),
                         child: Text(
                           'Image:',
                           style: TextStyle(

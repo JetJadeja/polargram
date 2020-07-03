@@ -22,7 +22,6 @@ class PostRefrence {
   int _hashCode;
   @override
   int get hashCode {
-    // ignore: join_return_with_assignment
     _hashCode ??= timestamp.hashCode;
     return _hashCode;
   }

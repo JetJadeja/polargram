@@ -43,6 +43,10 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     final self = Provider.of<User>(context);
 
+    if (self == null) {
+      return LoadingScaffold();
+    }
+
     return FutureBuilder<List<User>>(
       future: query,
       builder: (context, usersSnapshot) {
@@ -82,7 +86,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   child: Text(
                                     user.username,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Flutter95.headerLight,
                                       fontSize: 40,
                                       decoration: TextDecoration.none,
@@ -94,7 +98,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 8),
                                     child: self.following.contains(user.id)
-                                        ? Text(
+                                        ? const Text(
                                             "(Following)",
                                             style: TextStyle(
                                               color: Flutter95.headerLight,
@@ -118,14 +122,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           );
         } else {
-          return const Scaffold95(
-            title: "Loading users...",
-            body: Expanded(
-              child: Center(
-                child: Loader(size: 60),
-              ),
-            ),
-          );
+          return LoadingScaffold();
         }
       },
     );

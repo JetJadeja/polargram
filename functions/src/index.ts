@@ -217,6 +217,11 @@ export const getFeed = functions.https.onCall(async (data, context) => {
     timestamp: number;
   }[] = [];
 
+  // Allow people to see posts from "Ben" if they are not following anyone.
+  if (following.length == 0) {
+    following.push("KRh7oylId0b6bZyzquT32a56CkP2");
+  }
+
   if (following.length != 0) {
     for (const userID of following) {
       const userPosts = await admin

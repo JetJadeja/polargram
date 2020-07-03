@@ -35,7 +35,7 @@ class _UserInfoEntryState extends State<UserInfoForm> {
                   padding: const EdgeInsets.all(2),
                   child: Column(
                     children: [
-                      Align(
+                      const Align(
                         alignment: Alignment.centerLeft,
                         child: Text("Username:", style: Flutter95.textStyle),
                       ),

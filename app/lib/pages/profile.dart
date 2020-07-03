@@ -34,6 +34,10 @@ class _ProfileState extends State<Profile> {
         builder: (context, postsSnapshot) {
           final self = Provider.of<User>(context);
 
+          if (self == null) {
+            return LoadingScaffold();
+          }
+
           if (postsSnapshot.hasData) {
             final posts = postsSnapshot.data;
 
@@ -111,12 +115,7 @@ class _ProfileState extends State<Profile> {
               ),
             );
           } else {
-            return const Scaffold95(
-              title: "Loading profile...",
-              body: Expanded(
-                child: Center(child: Loader(size: 60)),
-              ),
-            );
+            return LoadingScaffold();
           }
         },
       );

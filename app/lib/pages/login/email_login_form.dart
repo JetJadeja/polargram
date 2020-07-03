@@ -29,7 +29,7 @@ class _EmailLoginFormState extends State<EmailLoginForm> {
               padding: const EdgeInsets.all(2),
               child: Column(
                 children: [
-                  Align(
+                  const Align(
                     alignment: Alignment.centerLeft,
                     child: Text("Email", style: Flutter95.textStyle),
                   ),
@@ -37,8 +37,8 @@ class _EmailLoginFormState extends State<EmailLoginForm> {
                     key: const Key("Email Input"),
                     controller: emailController,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 8),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Password", style: Flutter95.textStyle),
