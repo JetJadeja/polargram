@@ -1,5 +1,10 @@
 # Polargram
 
+<p align="center">
+   <img src="https://i.imgur.com/0I3Of0Z.png" />
+</p>
+
+
 ### ↠ Online Demo: https://polargram.me/demo *(Demo Only: Double tap on a polaroid to "shake" it)*
 
 Instagram like it's 1995.
