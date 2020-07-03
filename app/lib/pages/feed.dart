@@ -204,269 +204,254 @@ class _PostListState extends State<PostList> {
     }
 
     return FutureBuilder<List<PostRefrence>>(
-        future: _feedFuture,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final feed = snapshot.data
-              ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+      future: _feedFuture,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final feed = snapshot.data
+            ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
-            return Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                child: PageView.builder(
-                  onPageChanged: (index) {
-                    if (index == 0) {
-                      _pageController.animateToPage(
-                        1,
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeInOut,
-                      );
-                      refresh();
-                    }
-                  },
-                  controller: _pageController,
-                  scrollDirection: Axis.vertical,
-                  itemCount: feed.length + 2,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: const [
-                          Padding(
-                            padding: EdgeInsets.only(bottom: 60),
-                            child: Loader(size: 40),
-                          ),
-                        ],
-                      );
-                    }
-
-                    // If at the end of feed, allow users to refresh.
-                    if (index == feed.length + 1) {
-                      return Center(
-                        child: GestureDetector(
-                          onTap: () => {
-                            _pageController.animateToPage(
-                              0,
-                              duration: const Duration(milliseconds: 500),
-                              curve: Curves.easeInOut,
-                            )
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                "This is the end of your feed!",
-                                style: TextStyle(
-                                  color: Flutter95.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                              Text(
-                                "Follow users or 'shake' posts to get more recommendations (or click this screen to refresh)",
-                                textAlign: TextAlign.center,
-                                style: Flutter95.textStyle,
-                              ),
-                            ],
-                          ),
+          return Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: PageView.builder(
+                onPageChanged: (index) {
+                  if (index == 0) {
+                    _pageController.animateToPage(
+                      1,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                    );
+                    refresh();
+                  }
+                },
+                controller: _pageController,
+                scrollDirection: Axis.vertical,
+                itemCount: feed.length + 2,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: const [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 60),
+                          child: Loader(size: 40),
                         ),
-                      );
-                    }
+                      ],
+                    );
+                  }
 
-                    final feedItem = feed[index - 1];
+                  // If at the end of feed, allow users to refresh.
+                  if (index == feed.length + 1) {
+                    return Center(
+                      child: GestureDetector(
+                        onTap: () => {
+                          _pageController.animateToPage(
+                            0,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeInOut,
+                          )
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text(
+                              "This is the end of your feed!",
+                              style: TextStyle(
+                                color: Flutter95.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.none,
+                              ),
+                            ),
+                            Text(
+                              "Follow users or 'shake' posts to get more recommendations (or click this screen to refresh)",
+                              textAlign: TextAlign.center,
+                              style: Flutter95.textStyle,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
 
-                    final feedUserID = feedItem.userID;
-                    final feedPostID = feedItem.postID;
+                  final feedItem = feed[index - 1];
 
-                    return StreamBuilder<User>(
-                      stream: Document<User>(path: "users/$feedUserID")
-                          .streamData(),
-                      builder: (context, userSnapshot) {
-                        return StreamBuilder<Post>(
-                          stream: Document<Post>(
-                            path: "users/$feedUserID/posts/$feedPostID",
-                          ).streamData(),
-                          builder: (context, postSnapshot) {
-                            if (userSnapshot.hasData && postSnapshot.hasData) {
-                              final Post post = postSnapshot.data;
-                              final User user = userSnapshot.data;
+                  final feedUserID = feedItem.userID;
+                  final feedPostID = feedItem.postID;
 
-                              final int shakes = post.shakes.values.isNotEmpty
-                                  ? post.shakes.values.reduce(
-                                      (value, element) => value + element)
-                                  : 0;
+                  return StreamBuilder<User>(
+                    stream:
+                        Document<User>(path: "users/$feedUserID").streamData(),
+                    builder: (context, userSnapshot) {
+                      return StreamBuilder<Post>(
+                        stream: Document<Post>(
+                          path: "users/$feedUserID/posts/$feedPostID",
+                        ).streamData(),
+                        builder: (context, postSnapshot) {
+                          if (userSnapshot.hasData && postSnapshot.hasData) {
+                            final Post post = postSnapshot.data;
+                            final User user = userSnapshot.data;
 
-                              final String timestamp =
-                                  DateTime.fromMillisecondsSinceEpoch(
-                                          post.timestamp)
-                                      .toLocal()
-                                      .toString()
-                                      .split(" ")[0];
+                            final int shakes = post.shakes.values.isNotEmpty
+                                ? post.shakes.values
+                                    .reduce((value, element) => value + element)
+                                : 0;
 
-                              String image;
+                            final String timestamp =
+                                DateTime.fromMillisecondsSinceEpoch(
+                                        post.timestamp)
+                                    .toLocal()
+                                    .toString()
+                                    .split(" ")[0];
 
-                              switch (shakes) {
-                                case 0:
-                                  image = post.image_0;
-                                  break;
+                            String image;
 
-                                case 1:
-                                  image = post.image_1;
-                                  break;
+                            switch (shakes) {
+                              case 0:
+                                image = post.image_0;
+                                break;
 
-                                case 2:
-                                  image = post.image_2;
-                                  break;
+                              case 1:
+                                image = post.image_1;
+                                break;
 
-                                case 3:
-                                  image = post.image_3;
-                                  break;
+                              case 2:
+                                image = post.image_2;
+                                break;
 
-                                default:
-                                  image = post.image_4;
-                                  break;
-                              }
+                              case 3:
+                                image = post.image_3;
+                                break;
 
-                              return GestureDetector(
-                                onDoubleTap: handleShake,
-                                child: VisibilityDetector(
-                                  key: Key(post.id),
-                                  onVisibilityChanged: (visibilityInfo) {
-                                    if (visibilityInfo.visibleFraction >= 0.8) {
-                                      setState(() {
-                                        _visiblePostID = post.id;
-                                        _visiblePostCreatorID = user.id;
-                                      });
+                              default:
+                                image = post.image_4;
+                                break;
+                            }
 
-                                      for (final imageURL in post.images) {
-                                        precacheImage(
-                                          NetworkImage(imageURL),
-                                          context,
-                                        );
-                                      }
+                            return GestureDetector(
+                              onDoubleTap: handleShake,
+                              child: VisibilityDetector(
+                                key: Key(post.id),
+                                onVisibilityChanged: (visibilityInfo) {
+                                  if (visibilityInfo.visibleFraction >= 0.8) {
+                                    setState(() {
+                                      _visiblePostID = post.id;
+                                      _visiblePostCreatorID = user.id;
+                                    });
+
+                                    for (final imageURL in post.images) {
+                                      precacheImage(
+                                        NetworkImage(imageURL),
+                                        context,
+                                      );
                                     }
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 60),
-                                    child: Column(
+                                  }
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.only(top: 60),
+                                  alignment: Alignment.topCenter,
+                                  child: ShakeAnimatedWidget(
+                                    enabled: _shake,
+                                    duration: const Duration(milliseconds: 700),
+                                    shakeAngle: Rotation.deg(z: 20, x: 70),
+                                    curve: Curves.bounceOut,
+                                    child: Stack(
                                       children: [
-                                        ShakeAnimatedWidget(
-                                          enabled: _shake,
-                                          duration:
-                                              const Duration(milliseconds: 700),
-                                          shakeAngle:
-                                              Rotation.deg(z: 20, x: 70),
-                                          curve: Curves.bounceOut,
-                                          child: Stack(
-                                            children: [
-                                              Center(
-                                                child: SizedBox(
-                                                  width: 291,
-                                                  height: 355,
-                                                  child: Image.asset(
-                                                    "assets/polaroid.png",
-                                                  ),
+                                        SizedBox(
+                                          width: 291,
+                                          height: 355,
+                                          child: Image.asset(
+                                            "assets/polaroid.png",
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 23,
+                                            left: 25,
+                                          ),
+                                          child: SizedBox(
+                                            width: 245,
+                                            height: 255,
+                                            child: Image.network(
+                                              image,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: 244,
+                                          height: 70,
+                                          margin: const EdgeInsets.only(
+                                            left: 25,
+                                            top: 276,
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                post.title,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  color: Flutter95.black,
+                                                  fontSize: 17,
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
                                               ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 20),
-                                                child: Center(
-                                                  child: SizedBox(
-                                                    width: 245,
-                                                    height: 255,
-                                                    child: Image.network(
-                                                      image,
+                                              Row(
+                                                children: [
+                                                  const Text("by ",
+                                                      style:
+                                                          Flutter95.textStyle),
+                                                  GestureDetector(
+                                                    onTap: () => Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (ctx) =>
+                                                            Profile(
+                                                                userID: user.id,
+                                                                username: user
+                                                                    .username),
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: 245,
-                                                height: 70,
-                                                margin: const EdgeInsets.only(
-                                                  left: 57,
-                                                  top: 276,
-                                                ),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      post.title,
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
+                                                    child: Text(
+                                                      user.username,
                                                       style: const TextStyle(
-                                                        color: Flutter95.black,
-                                                        fontSize: 17,
+                                                        color: Flutter95
+                                                            .headerLight,
+                                                        fontSize: 14,
                                                         decoration:
                                                             TextDecoration.none,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
                                                     ),
-                                                    Row(
-                                                      children: [
-                                                        const Text("by ",
-                                                            style: Flutter95
-                                                                .textStyle),
-                                                        GestureDetector(
-                                                          onTap: () => Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder: (ctx) => Profile(
-                                                                      userID: user
-                                                                          .id,
-                                                                      username:
-                                                                          user.username))),
-                                                          child: Text(
-                                                            user.username,
-                                                            style:
-                                                                const TextStyle(
-                                                              color: Flutter95
-                                                                  .headerLight,
-                                                              fontSize: 14,
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .none,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Text(" - $timestamp - ",
-                                                            style: Flutter95
-                                                                .textStyle),
-                                                        Flexible(
-                                                          child: Text(
-                                                            "$shakes shakes",
-                                                            softWrap: false,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .fade,
-                                                            style:
-                                                                const TextStyle(
-                                                              color: Flutter95
-                                                                  .headerDark,
-                                                              fontSize: 14,
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .none,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
+                                                  ),
+                                                  Text(" - $timestamp - ",
+                                                      style:
+                                                          Flutter95.textStyle),
+                                                  Flexible(
+                                                    child: Text(
+                                                      "$shakes shakes",
+                                                      softWrap: false,
+                                                      overflow:
+                                                          TextOverflow.fade,
+                                                      style: const TextStyle(
+                                                        color: Flutter95
+                                                            .headerDark,
+                                                        fontSize: 14,
+                                                        decoration:
+                                                            TextDecoration.none,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
@@ -475,21 +460,23 @@ class _PostListState extends State<PostList> {
                                     ),
                                   ),
                                 ),
-                              );
-                            } else {
-                              return CenterLoader();
-                            }
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
+                              ),
+                            );
+                          } else {
+                            return CenterLoader();
+                          }
+                        },
+                      );
+                    },
+                  );
+                },
               ),
-            );
-          } else {
-            return ExpandedCenterLoader();
-          }
-        });
+            ),
+          );
+        } else {
+          return ExpandedCenterLoader();
+        }
+      },
+    );
   }
 }
