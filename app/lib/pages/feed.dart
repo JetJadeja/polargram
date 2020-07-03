@@ -347,112 +347,132 @@ class _PostListState extends State<PostList> {
                                       }
                                     }
                                   },
-                                  child: Column(
-                                    children: [
-                                      Elevation95(
-                                        type: Elevation95Type.down,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              ShakeAnimatedWidget(
-                                                enabled: _shake,
-                                                duration: const Duration(
-                                                    milliseconds: 700),
-                                                shakeAngle:
-                                                    Rotation.deg(z: 20, x: 70),
-                                                curve: Curves.bounceOut,
-                                                child: Stack(
-                                                  children: [
-                                                    Center(
-                                                      child: SizedBox(
-                                                        width: 291,
-                                                        height: 355,
-                                                        child: Image.asset(
-                                                          "assets/polaroid.png",
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              top: 20),
-                                                      child: Center(
-                                                        child: SizedBox(
-                                                          width: 245,
-                                                          height: 255,
-                                                          child: Image.network(
-                                                            image,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 60),
+                                    child: Column(
+                                      children: [
+                                        ShakeAnimatedWidget(
+                                          enabled: _shake,
+                                          duration:
+                                              const Duration(milliseconds: 700),
+                                          shakeAngle:
+                                              Rotation.deg(z: 20, x: 70),
+                                          curve: Curves.bounceOut,
+                                          child: Stack(
+                                            children: [
+                                              Center(
+                                                child: SizedBox(
+                                                  width: 291,
+                                                  height: 355,
+                                                  child: Image.asset(
+                                                    "assets/polaroid.png",
+                                                  ),
                                                 ),
                                               ),
-                                              Text(
-                                                post.title,
-                                                style: const TextStyle(
-                                                  color: Flutter95.black,
-                                                  fontSize: 24,
-                                                  decoration:
-                                                      TextDecoration.none,
-                                                  fontWeight: FontWeight.bold,
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 20),
+                                                child: Center(
+                                                  child: SizedBox(
+                                                    width: 245,
+                                                    height: 255,
+                                                    child: Image.network(
+                                                      image,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                              Row(
-                                                children: [
-                                                  const Text("by ",
-                                                      style:
-                                                          Flutter95.textStyle),
-                                                  GestureDetector(
-                                                    onTap: () => Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (ctx) => Profile(
-                                                                userID: user.id,
-                                                                username: user
-                                                                    .username))),
-                                                    child: Text(
-                                                      user.username,
+                                              Container(
+                                                width: 245,
+                                                height: 70,
+                                                margin: const EdgeInsets.only(
+                                                  left: 57,
+                                                  top: 276,
+                                                ),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      post.title,
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       style: const TextStyle(
-                                                        color: Flutter95
-                                                            .headerLight,
-                                                        fontSize: 14,
+                                                        color: Flutter95.black,
+                                                        fontSize: 17,
                                                         decoration:
                                                             TextDecoration.none,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
                                                     ),
-                                                  ),
-                                                  Text(" - $timestamp - ",
-                                                      style:
-                                                          Flutter95.textStyle),
-                                                  Text(
-                                                    "$shakes shakes",
-                                                    style: const TextStyle(
-                                                      color:
-                                                          Flutter95.headerDark,
-                                                      fontSize: 14,
-                                                      decoration:
-                                                          TextDecoration.none,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                                    Row(
+                                                      children: [
+                                                        const Text("by ",
+                                                            style: Flutter95
+                                                                .textStyle),
+                                                        GestureDetector(
+                                                          onTap: () => Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (ctx) => Profile(
+                                                                      userID: user
+                                                                          .id,
+                                                                      username:
+                                                                          user.username))),
+                                                          child: Text(
+                                                            user.username,
+                                                            style:
+                                                                const TextStyle(
+                                                              color: Flutter95
+                                                                  .headerLight,
+                                                              fontSize: 14,
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .none,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(" - $timestamp - ",
+                                                            style: Flutter95
+                                                                .textStyle),
+                                                        Flexible(
+                                                          child: Text(
+                                                            "$shakes shakes",
+                                                            softWrap: false,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .fade,
+                                                            style:
+                                                                const TextStyle(
+                                                              color: Flutter95
+                                                                  .headerDark,
+                                                              fontSize: 14,
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .none,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                      const Expanded(
-                                        child: SizedBox(),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               );
